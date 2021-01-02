@@ -34,7 +34,7 @@
   "Inputs": [
     {
       "Id": "e1c73bdf76824ec3b90ffc99bfdc66d0",
-      "Name": "Light Power - Maximum distance (mm) a ray can be cast",
+      "Name": "Light Power - Maximum distance \(mm\) a ray can be cast",
       "Type": "number",
       "Value": "9450",
       "MaximumValue": 12000.0,
@@ -3876,7 +3876,7 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "Light Power - Maximum distance (mm) a ray can be cast",
+        "Name": "Light Power - Maximum distance \(mm\) a ray can be cast",
         "Id": "e1c73bdf76824ec3b90ffc99bfdc66d0",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
@@ -4326,7 +4326,7 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "Grid Size (mm)",
+        "Name": "Grid Size  \(mm\) ",
         "Id": "2e453ce7e407479d83a2f75a843228ac",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,

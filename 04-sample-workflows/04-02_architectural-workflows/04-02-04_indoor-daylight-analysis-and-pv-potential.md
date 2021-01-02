@@ -1,68 +1,89 @@
-# Workflow 4 : Building Indoor Daylight Analysis and PV Potential
+# Grid Object Placement in a Room
 
 <p align="center">
-  <img src="../../assets/sample/workflow21.gif">
-</p> CHECK THIS!!!!
+  <img src="../../assets/sample/workflowgrid1.gif">
+</p>
 
 ## Description
 
-This graph uses the site context and a zoning boundary created in Revit to generate different forms of a three-story building and openings on the building facades. The geometrical form of the building and the size of the openings on each north, south, east, west facade changes based on minimizing or maximizing indoor daylight and PV potential on roofs. This workflow is heavily dependent on the Solar Analysis node from Dynamo which makes an external call to web service. 
+This graph uses the optimize method to place objects in a room/space using a grid/stepped grid formation. The graph will compare the percentage of total coverage, the number of objects placed and the overlap in area of object influence, as various configurations are explored through Generative Design. 
 
+Although a simplified approach, this graph can be used as the foundation to explore more complex and personalized criteria that relate specifically to your project or practice. 
 
-[Download workflow files and detailed pdf and video tutorials](https://github.com/DynamoDS/RefineryPrimer/releases/download/samples-v1/04-02-02_Building-positioning.zip) CHECK THIS!!!!
+This sample file is available in the most recent version of Generative Design in Revit.
 
-## Static inputs
+This workflow features two possible grid arrangements you can choose from, depending on which fits best your workflow: 
+- rectangular grid
+- stepped grid
 
-| Name| Input Description | 
+## Grids
+
+### Rectangular grid
+<p align="center">
+  <img src="../../assets/sample/workflowgrid22.png">
+</p>
+
+With a rectangular grid, elements are aligned in both X and Y axis. This type of formation is useful when you require regularity and straight lines of circulation between elements. Typical use of this grid is for laying out items such as beds, school desks, shop gondolas, etc.  
+
+###  Stepped grid
+<p align="center">
+  <img src="../../assets/sample/workflowgrid23.png">
+</p>
+
+In a stepped grid, objects are not aligned by each axis to avoid a rigid x-y formation, creating a diamond pattern. This type of grid is usually used to avoid the overlap of the objects' radius of influence. The stepped grid is usually used to locate items such as tables, plants, theatre seats, etc. 
+
+## Static Inputs
+
+| Input | Description |
 | :--- | :--- |
-| Site boundary         | Select the site boundary lines from the Revit model |
-| Urban context         | Select the surrounding context that will affect solar analysis | 
-| Floor height          | Floor to floor height of the building | 
-| Location coordinates  | The real-world coordinates used for the solar analysis | 
-| Date and time         | Five different suggested sets of date and time options | 
+| Room | Room in which objects are placed |
+| Radius of influence | Object radius of influence for optimization calculation |
+| Minimum distance to wall | This sets a minimum value for the random seed to determine the distance from the object grid to the wall |
+| Maximum distance between objects | This sets a maximum value for the random seed to determine the distance between objects within the grid |
 
+Constraints for radius, minimum, and maximum values can only be changed using Dynamo.
 
-## Variable inputs
+## Variable Inputs
 
-| Name    | Description |
+| Name | Description |
 | :--- | :--- |
-| Window to wall ratio | The window to wall ratio for the north, south, east, and west facing facades |
-| Corner selection     | Selecting the corner point of the bottom, middle, and top of the building form that its location will change|
-| Corner adjustment    | Variable to change the location of the selected corner point |
+| Wall distance \(seed\) | Gives a random value for the separation of the grid start to the wall. This value is constrained by the minimum and maximum distances to wall in the static input. |
+| Object distance X \(seed\) | Distance in between objects in the grid's X-axis. This value is constrained by the minimum and maximum distances between objects in the static input. |
+| Object distance Y \(seed\) | Distance in between objects in the grid's Y-axis. This value is constrained by the minimum and maximum distances between objects in the static input. |
 
+## Graph Description
 
-## Functions
+The graph is made up of a series of functions, which are divided into groups inside the graph. Each group has a name and a short description, where the name indicates the type of function being run and the description explains the process in more detail.
 
-The script is made up of a series of functions, which are divided into groups inside the graph. Each group has a name and a short description, where the name indicates the type of function that is being run and the description explains in more detail the process.
+This graph will input a model element, a room and variables for placing a grid. The rooms surface and perimeter are used to calculate further metrics. Next, random values are assigned for the wall distance between the wall and the beginning of the grid, and the grid X- and Y-axes separations. 
 
-The graph uses the urban context and a zoning boundary (representing the volumetric constraints of the site such as setbacks and height) developed in Revit to create a generative building form with indoor daylight and PV potential analysis as the key focus. The generator of this script 1. provides a three-story building in which the shape of bottom, middle, and top stories can change based on the corner selection and adjustment inputs, and 2. creates openings on the building facades and groups them based on its direction to north, south, east, and west. The solar analysis component of the script inputs real-world location coordinates and the date and time to run the daylight and PV analysis on selected floors and roofs. The overshadowing of the generated building on the urban context can also be visualized and analyzed further. Other outputs of the script besides solar analysis include floor area ratio (FAR) and floor space index (FSI), and building's total window to wall ratio (WWR).
+These values are used to create points along the room. The graph then determines how much each object's area of influence overlaps with one another, and with the perimeter of the room.
 
-
-## Visualization
-
-When geometry is created in Dynamo, often other geometry is needed to facilitate the overall process. To ensure the geometry displayed shows the final geometric output, all unnecessary geometry has been switched off. Any nodes with the preview switched off will not display the output visually in Refinery. In this case, only the main building and the resulting daylight and PV potential on the main building roofs will be visible. The solar analysis is represented on the external surfaces of the building as a colored grid of points. These points are colored from yellow to black to indicate lit and shaded areas.
+Using optimization, the object's coverage and number of objects is maximized while the total object overlap is minimized.
 
 ## Evaluators
 
-| Name   | Description |
+| Name | Description |
 | :--- | :--- |
-| Average exposure on roofs        | Numerical values indicating average solar exposure on selected roofs for analyzing PV potential |
-| Average exposure on floors       | Numerical values indicating average solar exposure on selected floors for daylight analysis |
-| WWR                              | Total building window to wall ratio |
-| Floor area ratio                 | Gross floor area to total ground (site) area |
-| Floor space index                | Area of building footprint on site to total ground (site) area |
-
-## Benefits of Using Refinery
-
-Without the aid of Refinery, running this script in Dynamo, the user would be required to manually change the form of the three-story building as well as the size of the openings on each facade until they managed to find the desired shape that would benefit from the site's ambient source of solar energy for natural daylighting and potential for installing PV panels. This process, unless incredibly lucky, would take hours if not days. As the aim is simple, to find the shape and size of opening that provides either the minimum or maximum indoor daylight and PV potential, Refinery can be leveraged by using the *`Optimize`* approach. 
+| Percent Coverage \(%\) | Percentage of room covered by the object's radius of influence |
+| Area Coverage \(m²\) | Total area covered by the object's radius of influence |
+| Number of Objects \(u\) | Number of objects placed in the room |
+| Internal Object Overlap \(m²\) | Internal object overlap |
+| External Object Overlap \(m²\) | External \(perimeter\) object overlap |
+| Total Object Overlap \(m²\) | Total overlap of both internal and external objects |
 
 ## Results
 
-Once Refinery has completed, the results can be explored through the available tables and graphs.
-The image below shows an example output from an optimized study based on 10 generations with a population of 20. The outputs were defined as maximized for *`(AEF) Average Exposure on Floor`*, *`(AER) Average Exposure on Roofs`*, *`(FAR) Floor Area Ratio`*, and minimized for *`WWR`*. 
-
-<br>
+Explore Outcomes will display various grid configurations. In this example, you can see results in the X- and Y-axes,  according to their X and Y seed. Each result is displayed as a point, where the point’s size is determined by the number of objects of each result.
 
 <p align="center">
-<img src="../../assets/sample/workflow22.png" style="width:85%;"/>
+<img src="../../assets/sample/workflowgrid2.png" style="width:85%;"/>
 </p>
+
+Once generation has finished, the results can be explored through the tables and graphs in the Explore Outcomes dialog. The image below shows an example output from an optimized study based on four generations with a population of 20.
+
+## Video Tutorial
+
+{% embed url="https://www.youtube.com/watch?v=IC0JqqeIjwg" %}
+
+{% page-ref page="./" %}

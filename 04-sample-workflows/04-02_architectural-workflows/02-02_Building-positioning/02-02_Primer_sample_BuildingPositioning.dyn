@@ -6234,7 +6234,7 @@
       },
       {
         "ShowGeometry": false,
-        "Name": "Average Floor to Floor Distance (mm)",
+        "Name": "Average Floor to Floor Distance  \(mm\) ",
         "Id": "0d9e37dd5c6c49ab9944ba2b72d52329",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -6244,7 +6244,7 @@
       },
       {
         "ShowGeometry": false,
-        "Name": "Boundary Offset (mm)",
+        "Name": "Boundary Offset  \(mm\) ",
         "Id": "96a0576248284e49acc34aa79b2a6172",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
